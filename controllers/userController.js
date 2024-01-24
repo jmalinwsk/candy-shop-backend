@@ -24,5 +24,37 @@ const loginUserController = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
+const getUsersController = asyncHandler(async (req, res) => {
+  try {
+    const getUsers = await User.find();
+    res.json(getUsers);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+const getUserController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const getUser = await User.findById(id);
+    res.json({ getUser });
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+const deleteUserController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteUser = await User.findByIdAndDelete(id);
+    res.json({ deleteUser });
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 
-module.exports = { createUserController, loginUserController };
+module.exports = {
+  createUserController,
+  loginUserController,
+  getUsersController,
+  getUserController,
+  deleteUserController
+};

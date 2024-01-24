@@ -15,14 +15,14 @@ var userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
-  }
+  },
 });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   const salt = bcrypt.genSaltSync(saltRounds);
   this.password = bcrypt.hashSync(this.password, salt);
 });
-userSchema.methods.isPasswordMatched = async function(enteredPassword) {
+userSchema.methods.isPasswordMatched = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
