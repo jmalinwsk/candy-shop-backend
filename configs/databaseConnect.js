@@ -9,4 +9,5 @@ const databaseConnect = () => {
     throw new Error();
   }
 };
+
 module.exports = databaseConnect;
