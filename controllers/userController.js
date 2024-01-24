@@ -24,6 +24,23 @@ const loginUserController = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
+const updateUserController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      {
+        email: req?.body.email,
+      },
+      {
+        new: true,
+      },
+    );
+    res.json(updateUser);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 const getUsersController = asyncHandler(async (req, res) => {
   try {
     const getUsers = await User.find();
@@ -56,5 +73,6 @@ module.exports = {
   loginUserController,
   getUsersController,
   getUserController,
-  deleteUserController
+  deleteUserController,
+  updateUserController
 };
