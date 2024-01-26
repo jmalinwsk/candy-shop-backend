@@ -25,9 +25,9 @@ const loginUserController = asyncHandler(async (req, res) => {
   }
 });
 const updateUserController = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
   try {
-    const updateUser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       id,
       {
         email: req?.body.email,
@@ -36,7 +36,7 @@ const updateUserController = asyncHandler(async (req, res) => {
         new: true,
       },
     );
-    res.json(updateUser);
+    res.json(updatedUser);
   } catch (err) {
     throw new Error(err);
   }
