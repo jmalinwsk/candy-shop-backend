@@ -27,7 +27,7 @@ const loginUserController = asyncHandler(async (req, res) => {
 const updateUserController = asyncHandler(async (req, res) => {
   const { id } = req.user;
   try {
-    const updatedUser = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
       id,
       {
         email: req?.body.email,
@@ -36,7 +36,7 @@ const updateUserController = asyncHandler(async (req, res) => {
         new: true,
       },
     );
-    res.json(updatedUser);
+    res.json(updateUser);
   } catch (err) {
     throw new Error(err);
   }
@@ -67,6 +67,40 @@ const deleteUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const blockUserController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const blockUser = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      },
+    );
+    res.json(blockUser);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+const unblockUserController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const unblockUser = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: false,
+      },
+      {
+        new: true,
+      },
+    );
+    res.json(unblockUser);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 
 module.exports = {
   createUserController,
@@ -75,4 +109,6 @@ module.exports = {
   getUserController,
   deleteUserController,
   updateUserController,
+  blockUserController,
+  unblockUserController,
 };
