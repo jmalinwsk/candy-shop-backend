@@ -2,6 +2,9 @@ const User = require("../models/userModel");
 const { generateToken } = require("../configs/jwtToken");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBID = require("../utils/validateMongoDBID");
+const { generateRefreshToken } = require("../configs/refreshToken");
+const jwt = require("jsonwebtoken");
+
 const createUserController = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const findUser = await User.findOne({ email: email });
@@ -16,6 +19,20 @@ const loginUserController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findUser?._id);
+    const updateUser = await User.findOneAndUpdate(
+      findUser._id,
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        new: true,
+      },
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 168 * 60 * 60 * 1000,
+    });
     res.json({
       _id: findUser?._id,
       email: findUser?.email,
@@ -107,6 +124,21 @@ const unblockUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const handleRefreshToken = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  if (!cookie?.refreshToken)
+    throw new Error("No refresh token in cookies!");
+  const refreshToken = cookie.refreshToken;
+  const user = await User.findOne({refreshToken});
+  if (!user)
+    throw new Error("No refresh token presented in database or not matched!");
+  jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err || user.id != decoded.id)
+      throw new Error("There is something wrong with the refresh token!");
+    const accessToken = generateToken(user?._id);
+    res.json({accessToken});
+  });
+});
 
 module.exports = {
   createUserController,
@@ -117,4 +149,5 @@ module.exports = {
   updateUserController,
   blockUserController,
   unblockUserController,
+  handleRefreshToken,
 };
