@@ -26,11 +26,11 @@ const loginUserController = asyncHandler(async (req, res) => {
   }
 });
 const updateUserController = asyncHandler(async (req, res) => {
-  const { id } = req.user;
-  validateMongoDBID(id);
+  const { _id } = req.user;
+  validateMongoDBID(_id);
   try {
     const updateUser = await User.findByIdAndUpdate(
-      id,
+      _id,
       {
         email: req?.body.email,
       },
@@ -91,6 +91,7 @@ const blockUserController = asyncHandler(async (req, res) => {
 });
 const unblockUserController = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBID(id);
   try {
     const unblockUser = await User.findByIdAndUpdate(
       id,
