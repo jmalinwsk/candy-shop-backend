@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
-  const findUser = await User.findOne({ email: email });
-  if (!findUser) {
+  const user = await User.findOne({ email: email });
+  if (!user) {
     const newUser = await User.create(req.body);
     res.json(newUser);
   } else {
@@ -17,11 +17,11 @@ const createUser = asyncHandler(async (req, res) => {
 });
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const findUser = await User.findOne({ email });
-  if (findUser && (await findUser.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findUser?._id);
+  const user = await User.findOne({ email });
+  if (user && (await user.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(user?._id);
     const updateUser = await User.findOneAndUpdate(
-      findUser._id,
+      user._id,
       {
         refreshToken: refreshToken,
       },
@@ -34,9 +34,9 @@ const loginUser = asyncHandler(async (req, res) => {
       maxAge: 168 * 60 * 60 * 1000,
     });
     res.json({
-      _id: findUser?._id,
-      email: findUser?.email,
-      token: generateToken(findUser?._id),
+      _id: user?._id,
+      email: user?.email,
+      token: generateToken(user?._id),
     });
   } else {
     throw new Error("Invalid credentials!");
@@ -70,7 +70,7 @@ const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoDBID(_id);
   try {
-    const updateUser = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       _id,
       {
         email: req?.body.email,
@@ -79,15 +79,15 @@ const updateUser = asyncHandler(async (req, res) => {
         new: true,
       },
     );
-    res.json(updateUser);
+    res.json(user);
   } catch (err) {
     throw new Error(err);
   }
 });
 const getUsers = asyncHandler(async (req, res) => {
   try {
-    const getUsers = await User.find();
-    res.json(getUsers);
+    const users = await User.find();
+    res.json(users);
   } catch (err) {
     throw new Error(err);
   }
@@ -96,8 +96,8 @@ const getUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
-    const getUser = await User.findById(id);
-    res.json({ getUser });
+    const user = await User.findById(id);
+    res.json({ user });
   } catch (err) {
     throw new Error(err);
   }
@@ -106,8 +106,8 @@ const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
-    const deleteUser = await User.findByIdAndDelete(id);
-    res.json({ deleteUser });
+    const user = await User.findByIdAndDelete(id);
+    res.json({ user });
   } catch (err) {
     throw new Error(err);
   }
@@ -116,7 +116,7 @@ const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
-    const blockUser = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: true,
@@ -125,7 +125,7 @@ const blockUser = asyncHandler(async (req, res) => {
         new: true,
       },
     );
-    res.json(blockUser);
+    res.json(user);
   } catch (err) {
     throw new Error(err);
   }
@@ -134,7 +134,7 @@ const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
-    const unblockUser = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: false,
@@ -143,7 +143,7 @@ const unblockUser = asyncHandler(async (req, res) => {
         new: true,
       },
     );
-    res.json(unblockUser);
+    res.json(user);
   } catch (err) {
     throw new Error(err);
   }
