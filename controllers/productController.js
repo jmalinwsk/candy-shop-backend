@@ -36,18 +36,28 @@ const updateProduct = asyncHandler(async (req, res) => {
     req.body.slug = slugify(req.body.title);
   }
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+    const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.json(updatedProduct)
+    res.json(product)
   } catch (err) {
     throw new Error(err);
   }
 });
+const deleteProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+      const product = await Product.findByIdAndDelete(id);
+      res.json(product)
+    } catch (err) {
+      throw new Error(err);
+    }
+  });
 
 module.exports = {
   createProduct,
   getProduct,
   getAllProducts,
   updateProduct,
+  deleteProduct,
 };
