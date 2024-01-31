@@ -42,6 +42,30 @@ const loginUserController = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
+const logoutUserController = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  if (!cookie?.refreshToken) throw new Error("No refresh token in cookies!");
+  const refreshToken = cookie.refreshToken;
+  const user = await User.findOne({ refreshToken });
+  if (!user) {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+    });
+    return res.sendStatus(403);
+  }
+  await User.findOneAndUpdate(
+    { refreshToken },
+    {
+      refreshToken: "",
+    },
+  );
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.sendStatus(204);
+});
 const updateUserController = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoDBID(_id);
@@ -126,23 +150,23 @@ const unblockUserController = asyncHandler(async (req, res) => {
 });
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
-  if (!cookie?.refreshToken)
-    throw new Error("No refresh token in cookies!");
+  if (!cookie?.refreshToken) throw new Error("No refresh token in cookies!");
   const refreshToken = cookie.refreshToken;
-  const user = await User.findOne({refreshToken});
+  const user = await User.findOne({ refreshToken });
   if (!user)
     throw new Error("No refresh token presented in database or not matched!");
   jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
     if (err || user.id != decoded.id)
       throw new Error("There is something wrong with the refresh token!");
     const accessToken = generateToken(user?._id);
-    res.json({accessToken});
+    res.json({ accessToken });
   });
 });
 
 module.exports = {
   createUserController,
   loginUserController,
+  logoutUserController,
   getUsersController,
   getUserController,
   deleteUserController,
