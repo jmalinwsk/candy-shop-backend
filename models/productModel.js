@@ -22,12 +22,12 @@ var productSchema = new mongoose.Schema({
     required: true,
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
+    type: String,
+    required: true,
   },
   brand: {
     type: String,
-    enum: ["Haribo", "Kinder"],
+    required: true,
   },
   quantity: {
     type: Number,
