@@ -1,28 +1,28 @@
 const express = require("express");
 const {
-  createUserController,
-  loginUserController,
-  getUsersController,
-  getUserController,
-  deleteUserController,
-  updateUserController,
-  blockUserController,
-  unblockUserController,
+  createUser,
+  loginUser,
+  getUsers,
+  getUser,
+  deleteUser,
+  updateUser,
+  blockUser,
+  unblockUser,
   handleRefreshToken,
-  logoutUserController,
+  logoutUser,
 } = require("../controllers/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/register", createUserController);
-router.post("/login", loginUserController);
-router.get("/all-users", getUsersController);
+router.post("/register", createUser);
+router.post("/login", loginUser);
+router.get("/all-users", getUsers);
 router.get("/refresh", handleRefreshToken);
-router.get("/logout", logoutUserController);
-router.get("/:id", authMiddleware, isAdmin, getUserController);
-router.delete("/:id", deleteUserController);
-router.put("/edit-user", authMiddleware, updateUserController);
-router.put("/block-user/:id", authMiddleware, isAdmin, blockUserController);
-router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUserController);
+router.get("/logout", logoutUser);
+router.get("/:id", authMiddleware, isAdmin, getUser);
+router.delete("/:id", deleteUser);
+router.put("/edit-user", authMiddleware, updateUser);
+router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
+router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUser);
 
 module.exports = router;

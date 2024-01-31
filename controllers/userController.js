@@ -5,7 +5,7 @@ const validateMongoDBID = require("../utils/validateMongoDBID");
 const { generateRefreshToken } = require("../configs/refreshToken");
 const jwt = require("jsonwebtoken");
 
-const createUserController = asyncHandler(async (req, res) => {
+const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const findUser = await User.findOne({ email: email });
   if (!findUser) {
@@ -15,7 +15,7 @@ const createUserController = asyncHandler(async (req, res) => {
     throw new Error("User already exists!");
   }
 });
-const loginUserController = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
@@ -42,7 +42,7 @@ const loginUserController = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
-const logoutUserController = asyncHandler(async (req, res) => {
+const logoutUser = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) throw new Error("No refresh token in cookies!");
   const refreshToken = cookie.refreshToken;
@@ -66,7 +66,7 @@ const logoutUserController = asyncHandler(async (req, res) => {
   });
   res.sendStatus(204);
 });
-const updateUserController = asyncHandler(async (req, res) => {
+const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoDBID(_id);
   try {
@@ -84,7 +84,7 @@ const updateUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const getUsersController = asyncHandler(async (req, res) => {
+const getUsers = asyncHandler(async (req, res) => {
   try {
     const getUsers = await User.find();
     res.json(getUsers);
@@ -92,7 +92,7 @@ const getUsersController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const getUserController = asyncHandler(async (req, res) => {
+const getUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
@@ -102,7 +102,7 @@ const getUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const deleteUserController = asyncHandler(async (req, res) => {
+const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
@@ -112,7 +112,7 @@ const deleteUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const blockUserController = asyncHandler(async (req, res) => {
+const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
@@ -130,7 +130,7 @@ const blockUserController = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const unblockUserController = asyncHandler(async (req, res) => {
+const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
   try {
@@ -164,14 +164,14 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  createUserController,
-  loginUserController,
-  logoutUserController,
-  getUsersController,
-  getUserController,
-  deleteUserController,
-  updateUserController,
-  blockUserController,
-  unblockUserController,
+  createUser,
+  loginUser,
+  logoutUser,
+  getUsers,
+  getUser,
+  deleteUser,
+  updateUser,
+  blockUser,
+  unblockUser,
   handleRefreshToken,
 };
