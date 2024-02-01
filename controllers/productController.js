@@ -39,20 +39,20 @@ const updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.json(product)
+    res.json(product);
   } catch (err) {
     throw new Error(err);
   }
 });
 const deleteProduct = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    try {
-      const product = await Product.findByIdAndDelete(id);
-      res.json(product)
-    } catch (err) {
-      throw new Error(err);
-    }
-  });
+  const { id } = req.params;
+  try {
+    const product = await Product.findByIdAndDelete(id);
+    res.json(product);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 
 module.exports = {
   createProduct,
