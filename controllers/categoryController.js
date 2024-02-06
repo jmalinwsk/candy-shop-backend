@@ -56,5 +56,5 @@ module.exports = {
   updateCategory,
   deleteCategory,
   getCategory,
-  getCategories
+  getCategories,
 };

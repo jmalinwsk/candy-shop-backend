@@ -56,5 +56,5 @@ module.exports = {
   updateBrand,
   deleteBrand,
   getBrand,
-  getBrands
+  getBrands,
 };
