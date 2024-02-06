@@ -5,6 +5,7 @@ const validateMongoDBID = require("../utils/validateMongoDBID");
 const { generateRefreshToken } = require("../configs/refreshToken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
+const crypto = require("crypto");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -196,6 +197,22 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const resetPassword = asyncHandler(async (req, res) => {
+  const {password} = req.body;
+  const { token } = req.params;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken:  hashedToken,
+    passwordResetExpires: {$gt: Date.now()}
+  });
+  if(!user)
+    throw new Error("Token expired!");
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  res.json(user);
+})
 
 module.exports = {
   createUser,
@@ -210,4 +227,5 @@ module.exports = {
   handleRefreshToken,
   updatePassword,
   forgotPasswordToken,
+  resetPassword
 };
