@@ -12,7 +12,7 @@ const sendEmail = asyncHandler(async (data, req, res) => {
     },
   });
   let info = await transporter.sendMail({
-    from: 'Candy Shop',
+    from: "Candy Shop",
     to: data.to,
     subject: data.subject,
     text: data.text,

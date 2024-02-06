@@ -12,7 +12,7 @@ const {
   logoutUser,
   updatePassword,
   forgotPasswordToken,
-  resetPassword
+  resetPassword,
 } = require("../controllers/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
