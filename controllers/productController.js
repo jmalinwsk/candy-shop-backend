@@ -89,9 +89,7 @@ const addOrRemoveFromWishlist = asyncHandler(async (req, res) => {
   const { productId } = req.body;
   try {
     const user = await User.findById(_id);
-    console.log(user);
     const alreadyAdded = user.wishlist.find((id) => {
-      console.log(id);
       return id.toString() === productId;
     });
     if (alreadyAdded) {
