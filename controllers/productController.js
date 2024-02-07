@@ -119,6 +119,48 @@ const addOrRemoveFromWishlist = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const rating = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { star, productId } = req.body;
+  try {
+    const product = await Product.findById(productId);
+    let alreadyRated = product.ratings.find((userId) => {
+      return userId.postedby.toString() === _id.toString();
+    });
+    if (alreadyRated) {
+      const product = await Product.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        },
+        {
+          $set: { "ratings.$.star": star },
+        },
+        {
+          new: true,
+        },
+      );
+      res.json(product);
+    } else {
+      const product = await Product.findByIdAndUpdate(
+        productId,
+        {
+          $push: {
+            ratings: {
+              star: star,
+              postedby: _id,
+            },
+          },
+        },
+        {
+          new: true,
+        },
+      );
+      res.json(product);
+    }
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 
 module.exports = {
   createProduct,
@@ -127,4 +169,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   addOrRemoveFromWishlist,
+  rating,
 };
