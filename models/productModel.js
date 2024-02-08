@@ -47,7 +47,7 @@ var productSchema = new mongoose.Schema(
         },
       },
     ],
-    totalRating: {
+    averageRating: {
       type: String,
       default: 0,
     },
