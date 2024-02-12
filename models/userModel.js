@@ -26,8 +26,7 @@ var userSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      type: String,
     },
     role: {
       type: String,

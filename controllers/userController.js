@@ -114,6 +114,20 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const saveAddress = asyncHandler(async (req, res, next) => {
+  const { _id} = req.user;
+  validateMongoDBID(_id);
+  try {
+    const user = await User.findByIdAndUpdate(_id, {
+      address: req?.body?.address,
+    }, {
+      new: true,
+    });
+    res.json(user);
+  } catch (err) {
+    throw new Error(err);
+  }
+})
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();
@@ -259,6 +273,7 @@ module.exports = {
   getUser,
   deleteUser,
   updateUser,
+  saveAddress,
   blockUser,
   unblockUser,
   handleRefreshToken,
