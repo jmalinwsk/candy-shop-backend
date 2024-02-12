@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const Product = require("../models/productModel");
+const Cart = require("../models/cartModel");
 const { generateToken } = require("../configs/jwtToken");
 const asyncHandler = require("express-async-handler");
 const validateMongoDBID = require("../utils/validateMongoDBID");
@@ -47,7 +49,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const admin = await User.findOne({ email });
-  if(admin.role !== "admin") throw new Error("User not authorized!");
+  if (admin.role !== "admin") throw new Error("User not authorized!");
   if (admin && (await admin.isPasswordMatched(password))) {
     const refreshToken = await generateRefreshToken(admin?._id);
     const updateUser = await User.findOneAndUpdate(
@@ -115,19 +117,23 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 const saveAddress = asyncHandler(async (req, res, next) => {
-  const { _id} = req.user;
+  const { _id } = req.user;
   validateMongoDBID(_id);
   try {
-    const user = await User.findByIdAndUpdate(_id, {
-      address: req?.body?.address,
-    }, {
-      new: true,
-    });
+    const user = await User.findByIdAndUpdate(
+      _id,
+      {
+        address: req?.body?.address,
+      },
+      {
+        new: true,
+      },
+    );
     res.json(user);
   } catch (err) {
     throw new Error(err);
   }
-})
+});
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();
@@ -254,12 +260,69 @@ const resetPassword = asyncHandler(async (req, res) => {
   await user.save();
   res.json(user);
 });
-const getWishlist = asyncHandler(async (req,res) => {
-  const { _id} = req.user;
+const getWishlist = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
   try {
     const user = await User.findById(_id).populate("wishlist");
     res.json(user);
-  } catch(err) {
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+const userCart = asyncHandler(async (req, res) => {
+  const { cart } = req.body;
+  const { _id } = req.user;
+  validateMongoDBID(_id);
+  try {
+    let products = [];
+    const user = await User.findById(_id);
+    const existingCart = await Cart.findOne({ userId: user._id });
+    if (existingCart) 
+      await Cart.deleteMany({ userId: user._id });
+    for (let i = 0; i < cart.length; i++) {
+      let obj = {};
+      obj.product = cart[i]._id;
+      obj.count = cart[i].count;
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+      obj.price = getPrice.price;
+      products.push(obj);
+    }
+    let totalPrice = 0;
+    for (let i = 0; i < products.length; i++) {
+      totalPrice += products[i].price * products[i].count;
+    }
+    let newCart = await new Cart({
+      products,
+      totalPrice,
+      userId: user._id,
+    }).save();
+    res.json(newCart);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+const getUserCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDBID(_id);
+  try {
+    const cart = await Cart.findOne({ userId: _id }).populate(
+      "products.product",
+    );
+    res.json(cart);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const {_id} = req.user;
+  validateMongoDBID(_id);
+  try {
+    const user = await User.findOne({_id});
+    const cart = await Cart.findOneAndDelete({userId: user._id});
+    res.json(cart);
+  } catch (err) {
     throw new Error(err);
   }
 })
@@ -280,5 +343,8 @@ module.exports = {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
-  getWishlist
+  getWishlist,
+  userCart,
+  getUserCart,
+  emptyCart
 };
