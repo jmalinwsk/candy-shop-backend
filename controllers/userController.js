@@ -44,6 +44,34 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const admin = await User.findOne({ email });
+  if(admin.role !== "admin") throw new Error("User not authorized!");
+  if (admin && (await admin.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(admin?._id);
+    const updateUser = await User.findOneAndUpdate(
+      admin._id,
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        new: true,
+      },
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 168 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: admin?._id,
+      email: admin?.email,
+      token: generateToken(admin?._id),
+    });
+  } else {
+    throw new Error("Invalid credentials!");
+  }
+});
 const logoutUser = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
   if (!cookie?.refreshToken) throw new Error("No refresh token in cookies!");
@@ -212,10 +240,20 @@ const resetPassword = asyncHandler(async (req, res) => {
   await user.save();
   res.json(user);
 });
+const getWishlist = asyncHandler(async (req,res) => {
+  const { _id} = req.user;
+  try {
+    const user = await User.findById(_id).populate("wishlist");
+    res.json(user);
+  } catch(err) {
+    throw new Error(err);
+  }
+})
 
 module.exports = {
   createUser,
   loginUser,
+  loginAdmin,
   logoutUser,
   getUsers,
   getUser,
@@ -227,4 +265,5 @@ module.exports = {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
+  getWishlist
 };
