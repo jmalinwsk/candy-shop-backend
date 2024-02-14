@@ -10,6 +10,7 @@ const createBrand = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const updateBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
@@ -22,6 +23,7 @@ const updateBrand = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const deleteBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
@@ -32,6 +34,7 @@ const deleteBrand = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const getBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);
@@ -42,6 +45,7 @@ const getBrand = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const getBrands = asyncHandler(async (req, res) => {
   try {
     const Brands = await Brand.find();

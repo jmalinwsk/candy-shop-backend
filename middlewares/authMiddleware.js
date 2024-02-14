@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
+
 const authMiddleware = asyncHandler(async (req, res, next) => {
   let token;
   if (req?.headers?.authorization?.startsWith("Bearer")) {
@@ -19,6 +20,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     throw new Error("No token attached to the header!");
   }
 });
+
 const isAdmin = asyncHandler(async (req, res, next) => {
   const { email } = req.user;
   const adminUser = await User.findOne({ email });

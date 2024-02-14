@@ -26,6 +26,7 @@ const getProduct = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const getProducts = asyncHandler(async (req, res) => {
   try {
     // filtering
@@ -64,6 +65,7 @@ const getProducts = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (req.body.title) {
@@ -87,6 +89,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const addOrRemoveFromWishlist = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { productId } = req.body;
@@ -122,6 +125,7 @@ const addOrRemoveFromWishlist = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const rating = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { productId, star, comment } = req.body;
@@ -180,6 +184,7 @@ const rating = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBID(id);

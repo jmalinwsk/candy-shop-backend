@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const saltRounds = 10;
+
 var userSchema = new mongoose.Schema(
   {
     email: {

@@ -344,6 +344,7 @@ const emptyCart = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const applyCoupon = asyncHandler(async (req, res) => {
   const { coupon } = req.body;
   const { _id } = req.user;
@@ -366,6 +367,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
   );
   res.json(totalPriceAfterDiscount);
 });
+
 const createOrder = asyncHandler(async (req, res) => {
   const { cashOnDelivery, couponApplied } = req.body;
   const { _id } = req.user;

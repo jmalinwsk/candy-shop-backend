@@ -16,5 +16,4 @@ var couponSchema = new mongoose.Schema({
   },
 });
 
-//Export the model
 module.exports = mongoose.model("Coupon", couponSchema);

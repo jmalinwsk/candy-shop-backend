@@ -24,6 +24,7 @@ const multerFilter = (req, file, callback) => {
     );
   }
 };
+
 const uploadImage = multer({
   storage: multerStorage,
   fileFilter: multerFilter,

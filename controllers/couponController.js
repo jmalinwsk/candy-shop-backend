@@ -9,6 +9,7 @@ const createCoupon = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const getCoupons = asyncHandler(async (req, res) => {
   try {
     const coupons = await Coupon.find();
@@ -17,6 +18,7 @@ const getCoupons = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const getCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -26,6 +28,7 @@ const getCoupon = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const updateCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -35,6 +38,7 @@ const updateCoupon = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+
 const deleteCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
