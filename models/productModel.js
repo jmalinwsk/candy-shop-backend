@@ -58,12 +58,9 @@ var productSchema = new mongoose.Schema(
     tags: [
       {
         type: String,
-        enum: [
-          "featured",
-          "new",
-        ],
-      }
-    ]
+        enum: ["featured", "new"],
+      },
+    ],
   },
   {
     timestamps: true,
