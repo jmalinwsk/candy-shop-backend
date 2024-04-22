@@ -4,7 +4,6 @@ const {
   updateEnquiry,
   deleteEnquiry,
   getEnquiry,
-  getAllenquiries,
   getEnquiries,
 } = require("../controllers/enquiryController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
