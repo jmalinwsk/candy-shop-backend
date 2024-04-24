@@ -289,30 +289,15 @@ const getWishlist = asyncHandler(async (req, res) => {
 });
 
 const userCart = asyncHandler(async (req, res) => {
-  const { cart } = req.body;
+  const { productId, quantity, price } = req.body;
   const { _id } = req.user;
   validateMongoDBID(_id);
   try {
-    let products = [];
-    const user = await User.findById(_id);
-    const existingCart = await Cart.findOne({ userId: user._id });
-    if (existingCart) await Cart.deleteMany({ userId: user._id });
-    for (let i = 0; i < cart.length; i++) {
-      let obj = {};
-      obj.product = cart[i]._id;
-      obj.count = cart[i].count;
-      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-      obj.price = getPrice.price;
-      products.push(obj);
-    }
-    let totalPrice = 0;
-    for (let i = 0; i < products.length; i++) {
-      totalPrice += products[i].price * products[i].count;
-    }
     let newCart = await new Cart({
-      products,
-      totalPrice,
-      userId: user._id,
+      userId: _id,
+      productId,
+      quantity,
+      price
     }).save();
     res.json(newCart);
   } catch (err) {
