@@ -18,22 +18,6 @@ var cartSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    // products: [
-    //   {
-    //     product: {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "Product",
-    //     },
-    //     count: Number,
-    //     price: Number,
-    //   },
-    // ],
-    // totalPrice: Number,
-    // totalPriceAfterDiscount: Number,
-    // userId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    // },
   },
   {
     timestamps: true,

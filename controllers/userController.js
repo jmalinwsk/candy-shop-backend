@@ -297,7 +297,7 @@ const userCart = asyncHandler(async (req, res) => {
       userId: _id,
       productId,
       quantity,
-      price
+      price,
     }).save();
     res.json(newCart);
   } catch (err) {
