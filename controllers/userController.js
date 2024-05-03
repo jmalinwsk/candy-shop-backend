@@ -318,6 +318,18 @@ const getUserCart = asyncHandler(async (req, res) => {
   }
 });
 
+const removeProductFromCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { productId } = req.body;
+  validateMongoDBID(_id);
+  try {
+    const removeProduct = await Cart.deleteOne({ userId: _id, productId: productId});
+    res.json(removeProduct);
+  } catch (err) {
+    throw new Error(err);
+  }
+})
+
 const emptyCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoDBID(_id);
@@ -453,6 +465,7 @@ module.exports = {
   getWishlist,
   userCart,
   getUserCart,
+  removeProductFromCart,
   emptyCart,
   applyCoupon,
   createOrder,
