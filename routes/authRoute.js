@@ -59,7 +59,7 @@ router.delete(
   removeProductFromCart,
 );
 router.put(
-  "/update-quantity/:productId/:quantity",
+  "/update-quantity",
   authMiddleware,
   updateProductQuantityInCart,
 );

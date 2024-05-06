@@ -333,7 +333,7 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
 
 const updateProductQuantityInCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { productId, quantity } = req.params;
+  const { productId, quantity } = req.body;
   validateMongoDBID(_id);
   try {
     const item = await Cart.findOne({ userId: _id, productId: productId });
